@@ -8,10 +8,25 @@
 	<script src="babel.min.js"></script>
 	<script type="text/babel">
 		class HelloWorld extends React.Component{
+			state = {
+				username : '[Dummy user]'
+			};
+			onRenderClick(){
+				let user = this.refs.txtUserName.value;
+				this.setState({username : user});
+			}
+			constructor(){
+				super();
+				this.onRenderClick = this.onRenderClick.bind(this);
+			}
 			render(){
 
-				return (<div>
-						<h1>Hello {this.props.user}, Welcome to React.js</h1>
+				return (
+					<div>
+						<label>User Name :</label>
+						<input type="text" ref="txtUserName" />
+						<input type="button" value="Render" onClick={this.onRenderClick} />
+						<h1>Hello {this.state.username}, Welcome to React.js</h1>
 						<hr />
 						<h3>Introduction</h3>
 						<div>
@@ -21,23 +36,16 @@
 					</div>)
 			}
 		}
-		function init(){
-			var btnRender = document.getElementById('btnRender');
-			btnRender.addEventListener('click', renderHelloWorld);
+		
+		
 			
-		}
-		function renderHelloWorld(){
-			let username = document.getElementById('txtUserName').value;
-			ReactDOM.render(<HelloWorld user={username}/>,
+		ReactDOM.render(<HelloWorld/>,
 				document.getElementById('root'));
-		}
-		init();
+		
 	</script>
 </head>
 <body>
-	<label>User Name :</label>
-	<input type="text" id="txtUserName">
-	<input type="button" value="Render" id="btnRender">
+	
 	<div id="root"></div>
 </body>
 </html>
