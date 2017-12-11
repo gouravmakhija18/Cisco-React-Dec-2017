@@ -19,6 +19,7 @@
 		}
 	</style>
 	<script src="jquery-3.2.1.min.js"></script>
+	<script src="handlebars.js"></script>
 	<script>
 		String.prototype.toInt = function() {
 			return parseInt(this, 10);
@@ -34,6 +35,15 @@
 				salary : 0
 			};
 
+			this.toJSON = function(){
+				return {
+					basic : _data.basic,
+					hra : _data.hra,
+					da : _data.da,
+					tax : _data.tax,
+					salary : _data.salary
+				}
+			}
 			this.get = function(attrName){
 				return _data[attrName];
 			};
@@ -95,11 +105,11 @@
 					<div class="field">
 						<table>
 							<tr>
-								<td id="tdBasic">[Basic]</td>
-								<td id="tdHra">[HRA]</td>
-								<td id="tdDa">[DA]</td>
-								<td id="tdTax">[Tax]</td>
-								<td id="tdSalary">[Salary]</td>
+								<td id="tdBasic">{{basic}}</td>
+								<td id="tdHra">{{hra}}</td>
+								<td id="tdDa">{{da}}</td>
+								<td id="tdTax">{{tax}}</td>
+								<td id="tdSalary">{{salary}}</td>
 							</tr>
 						</table>
 					</div>
@@ -107,9 +117,12 @@
 			`;
 
 			var $root = this.$root = $('<div></div>');
+			var templateFn = Handlebars.compile(_template);
 
 			this.render = function(){
-				$root.html(_template);
+				var data = calculator.toJSON();
+				var generatedHTML = templateFn(data);
+				$root.html(generatedHTML);
 			};
 
 			//React to user actions
@@ -134,27 +147,16 @@
 			});
 
 			//reacting to model changes
-			calculator.subscribe('salary', function(){
-				$('#tdSalary', $root).html(calculator.get('salary'));
-			});
-
-			calculator.subscribe('basic', function(){
-				$('#tdBasic', $root).html(calculator.get('basic'));
-			});
-			calculator.subscribe('hra', function(){
-				$('#tdHra', $root).html(calculator.get('hra'));
-			});
-			calculator.subscribe('da', function(){
-				$('#tdDa', $root).html(calculator.get('da'));
-			});
-			calculator.subscribe('tax', function(){
-				$('#tdTax', $root).html(calculator.get('tax'));
-			});
+			calculator.subscribe('salary', this.render);
+			calculator.subscribe('basic', this.render);
+			calculator.subscribe('hra', this.render);
+			calculator.subscribe('da', this.render);
+			calculator.subscribe('tax', this.render);
 		}
 		//View
 		$(function(){
 			/*window.calculator = new SalaryCalculatorModel();
-			
+
 			window.view1 = new SalaryCalculator(calculator);
 			view1.render();
 			view1.$root.appendTo(document.body);
