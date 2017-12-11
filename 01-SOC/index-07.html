@@ -152,13 +152,19 @@
 			});
 		}
 		//View
-		/*$(function(){
+		$(function(){
 			window.calculator = new SalaryCalculatorModel();
-			var view1 = new SalaryCalculator(calculator);
 			
+			window.view1 = new SalaryCalculator(calculator);
+			view1.render();
+			view1.$root.appendTo(document.body);
+
+			window.view2 = new SalaryCalculator(calculator);
+			view2.render();
+			view2.$root.appendTo(document.body);
 
 			
-		});*/
+		});
 	</script>
 </head>
 <body>
