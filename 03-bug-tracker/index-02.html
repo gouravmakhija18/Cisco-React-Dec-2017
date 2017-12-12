@@ -88,14 +88,17 @@
 			}
 			
 			render(){
+				console.log('BugTracker render triggered')
 				let bugItems = this.props.model.list.map((bug, index) => (
 					<BugItem data={bug} key={index} />
 				));
+				let closedCount = this.props.model.list.reduce(
+					(prevResult, bug) => bug.isClosed ? ++prevResult : prevResult, 0);
 				return(
 					
 					<div>
 						<section className="stats">
-							<span className="closed">1</span>
+							<span className="closed">{closedCount}</span>
 							<span> / </span>
 							<span>{this.props.model.list.length}</span>
 						</section>
@@ -125,12 +128,16 @@
 		}
 
 		class BugItem extends React.Component{
+			state = {
+				data : null
+			};
 			constructor(){
 				super();
 				this.onBugClick = this.onBugClick.bind(this);
 			}
 			onBugClick(){
 				this.props.data.toggle();
+				this.setState({data : this.props.data});
 				console.log('a bug is clicked', this.props.data);
 			}
 			render(){
@@ -151,7 +158,7 @@
 		
 		
 		let bugsCollection = new BugsCollection();
-		function renderApp(){
+		window.renderApp = function(){
 			ReactDOM.render(<BugTracker model={bugsCollection}/>,
 					document.getElementById('root'));
 		}
