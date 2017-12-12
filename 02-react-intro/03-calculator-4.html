@@ -53,8 +53,8 @@
 			<div>
 				<h1>Calculator</h1>
 				<hr/>
-				<input type="number" onChange={(evt) => model.n1 = parseInt(evt.target.value)}/>
-				<input type="number" onChange={(evt) => model.n2 = parseInt(evt.target.value)}/>
+				<CalculatorInput valueChange={(value) => model.n1 = value} />
+				<CalculatorInput valueChange={(value) => model.n2 = value} />
 				<input type="button" value="Add" onClick={() => model.add()} />
 				<input type="button" value="Subtract" onClick={() => model.subtract()} />
 				<input type="button" value="Multiply" onClick={() => model.multiply()} />
@@ -63,6 +63,7 @@
 			</div>
 		);
 
+		//to demonstrate 'top to bottom' communication
 		let CalculatorResult = ({data}) => {
 			let color = data >= 0 ? 'positive' : 'negative';
 			return (
@@ -70,7 +71,11 @@
 			)
 		}
 		
-		
+		//to demonstrate 'bottom to top' communication
+		// valueChange -> callback function passed by the parent and invoked by the child
+		let CalculatorInput = ({valueChange}) => (
+			<input type="number" onChange={(evt) => valueChange(parseInt(evt.target.value))}/>
+		)
 		
 		
 		var calculatorModel = new CalculatorModel();
