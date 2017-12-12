@@ -49,25 +49,31 @@
 			}
 
 		}
-		let Calculator = ({ model }) => (
-			<div>
-				<h1>Calculator</h1>
-				<hr/>
-				<CalculatorInput valueChange={(value) => model.n1 = value} />
-				<CalculatorInput valueChange={(value) => model.n2 = value} />
-				<input type="button" value="Add" onClick={() => model.add()} />
-				<input type="button" value="Subtract" onClick={() => model.subtract()} />
-				<input type="button" value="Multiply" onClick={() => model.multiply()} />
-				<input type="button" value="Divide" onClick={() => model.divide()} />
-				<CalculatorResult data={model.result} />
-			</div>
-		);
+		function Calculator({ model }){
+			return (
+				<div>
+					<h1>Calculator</h1>
+					<hr/>
+					<CalculatorInput valueChange={(value) => model.n1 = value} />
+					<CalculatorInput valueChange={(value) => model.n2 = value} />
+					<input type="button" value="Add" onClick={() => model.add()} />
+					<input type="button" value="Subtract" onClick={() => model.subtract()} />
+					<input type="button" value="Multiply" onClick={() => model.multiply()} />
+					<input type="button" value="Divide" onClick={() => model.divide()} />
+					<CalculatorResult data={model.result} />
+				</div>
+			);
+		}
 
 		//to demonstrate 'top to bottom' communication
 		let CalculatorResult = ({data}) => {
-			let color = data >= 0 ? 'positive' : 'negative';
+			let element = data >= 0 ? 
+				(<div className="positive">{data}</div>) 
+				: (<div className="negative">{data}</div>);
 			return (
-				<div className={color}>{data}</div>
+				<div>
+					{element}
+				</div>
 			)
 		}
 		
