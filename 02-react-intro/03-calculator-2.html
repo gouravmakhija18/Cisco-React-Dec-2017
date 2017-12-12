@@ -42,50 +42,18 @@
 
 		}
 		class Calculator extends React.Component{
-			
-			constructor(){
-				super();
-				this.onAddClick = this.onAddClick.bind(this);
-				this.onSubtractClick = this.onSubtractClick.bind(this);
-				this.onMultiplyClick = this.onMultiplyClick.bind(this);
-				this.onDivideClick = this.onDivideClick.bind(this);
-				this.updateNumber1 = this.updateNumber1.bind(this);
-				this.updateNumber2 = this.updateNumber2.bind(this);
-			}
-			
-			updateNumber1(){
-				let { model } = this.props;
-				model.n1 = parseInt(this.refs.txtNumber1.value);
-			}
-			updateNumber2(){
-				let { model } = this.props;
-				model.n2 = parseInt(this.refs.txtNumber2.value);
-			}
-			onAddClick(){
-				this.props.model.add();
-			}
-			onSubtractClick(){
-				this.props.model.subtract();
-			}
-			onMultiplyClick(){
-				this.props.model.multiply();
-			}
-			onDivideClick(){
-				this.props.model.divide();
-			}
-
 			render(){
-
+				let { model } = this.props;
 				return (
 					<div>
 						<h1>Calculator</h1>
 						<hr/>
-						<input type="number" ref="txtNumber1" onChange={this.updateNumber1}/>
-						<input type="number" ref="txtNumber2" onChange={this.updateNumber2}/>
-						<input type="button" value="Add" onClick={this.onAddClick} />
-						<input type="button" value="Subtract" onClick={this.onSubtractClick} />
-						<input type="button" value="Multiply" onClick={this.onMultiplyClick} />
-						<input type="button" value="Divide" onClick={this.onDivideClick} />
+						<input type="number" ref="txtNumber1" onChange={(evt) => model.n1 = parseInt(evt.target.value)}/>
+						<input type="number" ref="txtNumber2" onChange={(evt) => model.n2 = parseInt(evt.target.value)}/>
+						<input type="button" value="Add" onClick={() => model.add()} />
+						<input type="button" value="Subtract" onClick={() => model.subtract()} />
+						<input type="button" value="Multiply" onClick={() => model.multiply()} />
+						<input type="button" value="Divide" onClick={() => model.divide()} />
 						<div>{this.props.model.result}</div>
 					</div>
 				);
