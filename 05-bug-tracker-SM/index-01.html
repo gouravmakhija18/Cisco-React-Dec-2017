@@ -50,14 +50,16 @@
 					name : action.payload,
 					isClosed : false
 				};
-				currentState.push(newBug);
-				return currentState;
+				let newState = [...currentState, newBug];
+				return newState;
 			}
 			if (action.type === 'TOGGLE'){
-
+				let bugToToggle = action.payload;
+				let toggledBug = {...bugToToggle , isClosed : !bugToToggle.isClosed};
+				return currentState.map(bug => bug === bugToToggle ? toggledBug : bug);
 			}
 			if (action.type === 'REMOVE_CLOSED'){
-
+				return currentState.filter(bug => !bug.isClosed);
 			}
 			return currentState;
 		}
@@ -68,11 +70,11 @@
 				addNew(bugName){
 					return { type : 'ADD_NEW', payload : bugName}
 				},
-				toggle(){
-
+				toggle(bugToToggle){
+					return { type : 'TOGGLE', payload : bugToToggle};
 				},
 				removeClosed(){
-
+					return { type : 'REMOVE_CLOSED'};
 				}
 			}
 		}
@@ -92,11 +94,11 @@
 			}
 			
 			render(){
-				console.log('BugTracker render triggered')
-				let bugItems = this.props.bugs.map((bug, index) => (
-					<BugItem data={bug} key={index} />
+				let {bugs, toggle} = this.props;
+				let bugItems = bugs.map((bug, index) => (
+					<BugItem data={bug} key={index} toggle={toggle} />
 				));
-				let closedCount = this.props.bugs.reduce(
+				let closedCount = bugs.reduce(
 					(prevResult, bug) => bug.isClosed ? ++prevResult : prevResult, 0);
 				return(
 					
@@ -104,7 +106,7 @@
 						<section className="stats">
 							<span className="closed">{closedCount}</span>
 							<span> / </span>
-							<span>{this.props.bugs.length}</span>
+							<span>{bugs.length}</span>
 						</section>
 						<section className="sort">
 							<label htmlFor="">Order By :</label>
@@ -124,7 +126,7 @@
 							<ol>
 								{bugItems}
 							</ol>
-							<input type="button" value="Remove Closed" />
+							<input type="button" value="Remove Closed" onClick={() => this.props.removeClosed()}/>
 						</section>
 					</div>
 				)
@@ -132,17 +134,13 @@
 		}
 
 		class BugItem extends React.Component{
-			state = {
-				data : null
-			};
+			
 			constructor(){
 				super();
 				this.onBugClick = this.onBugClick.bind(this);
 			}
 			onBugClick(){
-				this.props.data.toggle();
-				this.setState({data : this.props.data});
-				console.log('a bug is clicked', this.props.data);
+				this.props.toggle(this.props.data);
 			}
 			render(){
 				let bug = this.props.data;
