@@ -65,22 +65,38 @@
 		}
 		
 
-		function getBugActionCreators(){
-			return {
-				addNew(bugName){
-					return { type : 'ADD_NEW', payload : bugName}
-				},
-				toggle(bugToToggle){
-					return { type : 'TOGGLE', payload : bugToToggle};
-				},
-				removeClosed(){
-					return { type : 'REMOVE_CLOSED'};
-				}
+		let bugActionCreators = {
+			addNew(bugName){
+				return { type : 'ADD_NEW', payload : bugName}
+			},
+			toggle(bugToToggle){
+				return { type : 'TOGGLE', payload : bugToToggle};
+			},
+			removeClosed(){
+				return { type : 'REMOVE_CLOSED'};
 			}
+		};
+		
+
+		function spinnerReducer(currentState = 0, action){
+			if (action.type === 'INCREMENT')
+				return currentState + action.payload;
+			if (action.type === 'DECREMENT')
+				return currentState - action.payload;
+			return currentState;
 		}
 
-		window.store = Redux.createStore(bugsReducer);
-		let actions = Redux.bindActionCreators(getBugActionCreators(), store.dispatch);
+		
+		let spinnerActionCreators = {
+			increment(value){
+				return { type : 'INCREMENT', payload : value };
+			},
+			decrement(value){
+				return { type : 'DECREMENT', payload : value}
+			}
+		};
+		
+
 		
 
 		let BugStats = ({bugs}) =>{
@@ -155,16 +171,44 @@
 			)
 		};
 		
+		let Spinner = ({currentValue, increment, decrement}) => (
+			<div>
+				<input type="button" value="DECREMENT" onClick={() => decrement(2)}/>
+				<span> {currentValue} </span>
+				<input type="button" value="INCREMENT" onClick={() => increment(1)}/>
+			</div>
+		);
 		
 		
-		
+
+		let allReducers = Redux.combineReducers({
+			bugs : bugsReducer,
+			spinner : spinnerReducer
+		});
+
+		window.store = Redux.createStore(allReducers);
+
+		let bugActions = Redux.bindActionCreators(bugActionCreators, store.dispatch);
+		let spinnerActions = Redux.bindActionCreators(spinnerActionCreators, store.dispatch);
+
 		window.renderApp = function(){
-			let bugs = store.getState();
+			let storeState =  store.getState(),
+				value = storeState.spinner,
+				bugs = storeState.bugs;
+			
 			ReactDOM.render(
-				<BugTracker 
-					bugs={bugs}
-					{...actions}
-				/>,
+				<div>
+					<Spinner 
+						currentValue={value} 
+						{...spinnerActions}
+					/>
+					<hr/>
+					<BugTracker 
+						bugs={bugs}
+						{...bugActions}
+					/>
+				</div>
+				,
 					document.getElementById('root'));
 		}
 		store.subscribe(renderApp);
