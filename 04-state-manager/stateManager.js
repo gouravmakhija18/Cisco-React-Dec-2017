@@ -36,7 +36,19 @@ let SM = (function(){
 		}
 	}
 
+	function bindActionCreators(actionCreators, dispatch){
+		let result = {};
+		for(let key in actionCreators){
+			result[key] = function(...args){
+				let action = actionCreators[key](...args);
+				dispatch(action);
+			}
+		}
+		return result;
+	}
+
 	return {
-		createStore : createStore
+		createStore : createStore,
+		bindActionCreators : bindActionCreators
 	}
 })();
